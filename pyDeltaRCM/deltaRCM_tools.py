@@ -14,8 +14,6 @@ import time
 
 class Tools(object):
 
-
-
     #############################################
     ############# run_one_timestep ##############
     #############################################
@@ -43,6 +41,7 @@ class Tools(object):
             self.finalize_water_iteration(timestep,iteration)
             
         self.sed_route()
+#        cython_function.sed_route()
 
 #################################
 
@@ -366,13 +365,7 @@ class Tools(object):
             px = 0
             py = start_indices[np_sed]
             
-            self.sed_parcel(theta_sed, 'mud', px, py)
-    
-    
-    
-
-    
-    
+            self.sed_parcel(theta_sed, 'mud', px, py)    
     
     
 #     def update_sed(self,timestep):

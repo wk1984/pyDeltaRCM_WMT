@@ -8,7 +8,6 @@ from basic_modeling_interface import Bmi
 
 from .deltaRCM_driver import pyDeltaRCM
 
-
 class BmiDelta(Bmi):
 
     _name = 'pyDeltaRCM'

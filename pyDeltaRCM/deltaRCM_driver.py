@@ -4,7 +4,6 @@ import logging
 from .deltaRCM_tools import Tools
 import datetime
 
-
 class pyDeltaRCM(Tools):
 
     _input_vars = {
