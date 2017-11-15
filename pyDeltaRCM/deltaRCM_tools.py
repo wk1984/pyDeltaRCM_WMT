@@ -297,7 +297,7 @@ class Tools(object):
                               
             self.sed_parcel(theta_sed, 'sand', px, py)   
         
-		self.topo_diffusion()
+        self.topo_diffusion()
 
         
     def topo_diffusion(self):
@@ -318,13 +318,6 @@ class Tools(object):
             
             self.eta += self.cf   
     
-=======
-        '''
-        Diffuse topography after routing all coarse sediment parcels
-        '''
-
-     
->>>>>>> 356aa4ba7aa9c67ab8d420358eaf256b86fd1aa0
     
     def mud_route(self):
         '''route mud parcels'''
