@@ -285,12 +285,9 @@ class Tools(object):
         start_indices = map(lambda x: self.random_pick_inlet(self.inlet),
                                       range(num_starts))
                                       
-
-        for np_sed in xrange(int(self.Np_sed * self.f_bedload)):
+        for np_sed in xrange(num_starts):
         
             self.Vp_res = self.Vp_sed
-            
-            self.itmax = 2 * (self.L + self.W)
             
             px = 0
             py = start_indices[np_sed]
@@ -298,17 +295,10 @@ class Tools(object):
             self.qs[px,py] = (self.qs[px,py] +
                               self.Vp_res / 2. / self.dt / self.dx)
                               
-            self.sed_parcel(theta_sed, 'sand', px, py)
+            self.sed_parcel(theta_sed, 'sand', px, py)   
         
 		self.topo_diffusion()
 
-        ### %% TO DO %% replace with topo diffusion        
-        
-        #####################################################################
-        #topo diffusion
-        #introduces lateral erosion as sed can be moved from banks
-        #into channels ##should be a function, for cleanliness
-        #####################################################################
         
     def topo_diffusion(self):
     
@@ -328,6 +318,13 @@ class Tools(object):
             
             self.eta += self.cf   
     
+=======
+        '''
+        Diffuse topography after routing all coarse sediment parcels
+        '''
+
+     
+>>>>>>> 356aa4ba7aa9c67ab8d420358eaf256b86fd1aa0
     
     def mud_route(self):
         '''route mud parcels'''
@@ -338,7 +335,7 @@ class Tools(object):
         start_indices = map(lambda x: self.random_pick_inlet(self.inlet),
                                       range(num_starts))
         
-        for np_sed in xrange(int(self.Np_sed * (1 - self.f_bedload))):
+        for np_sed in xrange(num_starts):
         
             self.Vp_res = self.Vp_sed
             
@@ -385,109 +382,109 @@ class Tools(object):
 
 
 
-    def walk(self, i, j, k):
-    
-        dxn = self.get_dxn(i,j,k)
+#     def walk(self, i, j, k):
+#     
+#         dxn = self.get_dxn(i,j,k)
+#         
+#         inbr = i + self.dxn_iwalk[dxn - 1]
+#         jnbr = j + self.dxn_jwalk[dxn - 1]
+#         
+#         return inbr, jnbr
         
-        inbr = i + self.dxn_iwalk[dxn - 1]
-        jnbr = j + self.dxn_jwalk[dxn - 1]
-        
-        return inbr, jnbr
-        
+
+# 
+# 
+#     def nbrs(self, dxn, px, py):
+#         '''location and distance to neighbor in dxn'''
+#         
+#         pxn = px + self.dxn_iwalk[dxn - 1]
+#         pyn = py + self.dxn_jwalk[dxn - 1]
+#         
+#         dist = self.dxn_dist[dxn-1]
+#         
+#         return pxn, pyn, dist
 
 
 
-    def nbrs(self, dxn, px, py):
-        '''location and distance to neighbor in dxn'''
-        
-        pxn = px + self.dxn_iwalk[dxn - 1]
-        pyn = py + self.dxn_jwalk[dxn - 1]
-        
-        dist = self.dxn_dist[dxn-1]
-        
-        return pxn, pyn, dist
+#     def get_dxn(self, i, j, k):
+#         '''get direction of neighbor i,j,k'''
+#         
+#         return int(self.nbr[i,j,k])
 
 
-
-    def get_dxn(self, i, j, k):
-        '''get direction of neighbor i,j,k'''
-        
-        return int(self.nbr[i,j,k])
-
-
-
-
-
-    def direction_setup(self):
-        '''set up grid with # of neighbors and directions'''
-    
-        Nnbr = np.zeros((self.L,self.W), dtype=np.int)
-        nbr = np.zeros((self.L,self.W,8))
-        
-        ################
-        #center nodes
-        ################
-        Nnbr[1:self.L-1, 1:self.W-1] = 8
-        nbr[1:self.L-1, 1:self.W-1, :] = [(k+1) for k in range(8)]  
-        
-        
-        ################
-        # left side
-        ################
-        Nnbr[0, 1:self.W-1] = 5
-        
-        for k in range(5):
-            nbr[0, 1:self.W-1, k] = (6 + (k + 1)) % 8
-            
-        nbr[0, 1:self.W-1, 1] = 8 #replace zeros with 8   
-          
-          
-        ################
-        # upper side
-        ################
-        Nnbr[1:self.L-1, self.W-1] = 5
-        
-        for k in range(5):
-            nbr[1:self.L-1, self.W-1, k] = (4 + (k + 1)) % 8
-            
-        nbr[1:self.L-1, self.W-1, 3] = 8 #replace zeros with 8   
-           
-           
-        ################
-        # lower side
-        ################
-        Nnbr[1:self.L-1, 0] = 5
-        
-        for k in range(5):
-            nbr[1:self.L-1, 0, k] = (k + 1) % 8   
-            
-            
-        ####################
-        # lower-left corner
-        ####################
-        Nnbr[0,0] = 3
-        
-        for k in range(3):
-            nbr[0, 0, k] = (k + 1) % 8
-        
-        
-        ####################
-        # upper-left corner
-        ####################
-        Nnbr[0, self.W-1] = 3
-        
-        for k in range(3):
-            nbr[0, self.W-1, k] = (6 + (k + 1)) % 8
-            
-        nbr[0, self.W-1, 1] = 8 #replace zeros with 8
-        
-        
-        
-        self.Nnbr = Nnbr
-        self.nbr = nbr
-
-
-
+# 
+# 
+# 
+#     def direction_setup(self):
+#         '''set up grid with # of neighbors and directions'''
+#     
+#         Nnbr = np.zeros((self.L,self.W), dtype=np.int)
+#         nbr = np.zeros((self.L,self.W,8))
+#         
+#         ################
+#         #center nodes
+#         ################
+#         Nnbr[1:self.L-1, 1:self.W-1] = 8
+#         nbr[1:self.L-1, 1:self.W-1, :] = [(k+1) for k in range(8)]  
+#         
+#         
+#         ################
+#         # left side
+#         ################
+#         Nnbr[0, 1:self.W-1] = 5
+#         
+#         for k in range(5):
+#             nbr[0, 1:self.W-1, k] = (6 + (k + 1)) % 8
+#             
+#         nbr[0, 1:self.W-1, 1] = 8 #replace zeros with 8   
+#           
+#           
+#         ################
+#         # upper side
+#         ################
+#         Nnbr[1:self.L-1, self.W-1] = 5
+#         
+#         for k in range(5):
+#             nbr[1:self.L-1, self.W-1, k] = (4 + (k + 1)) % 8
+#             
+#         nbr[1:self.L-1, self.W-1, 3] = 8 #replace zeros with 8   
+#            
+#            
+#         ################
+#         # lower side
+#         ################
+#         Nnbr[1:self.L-1, 0] = 5
+#         
+#         for k in range(5):
+#             nbr[1:self.L-1, 0, k] = (k + 1) % 8   
+#             
+#             
+#         ####################
+#         # lower-left corner
+#         ####################
+#         Nnbr[0,0] = 3
+#         
+#         for k in range(3):
+#             nbr[0, 0, k] = (k + 1) % 8
+#         
+#         
+#         ####################
+#         # upper-left corner
+#         ####################
+#         Nnbr[0, self.W-1] = 3
+#         
+#         for k in range(3):
+#             nbr[0, self.W-1, k] = (6 + (k + 1)) % 8
+#             
+#         nbr[0, self.W-1, 1] = 8 #replace zeros with 8
+#         
+#         
+#         
+#         self.Nnbr = Nnbr
+#         self.nbr = nbr
+# 
+# 
+# 
 
 
 
@@ -1518,9 +1515,9 @@ class Tools(object):
         self.dxn_dist = \
         [sqrt(self.dxn_iwalk[i]**2 + self.dxn_jwalk[i]**2) for i in range(8)]
     
-        SQ05 = sqrt(0.5)
-        self.dxn_ivec = [0,-SQ05,-1,-SQ05,0,SQ05,1,SQ05]
-        self.dxn_jvec = [1,SQ05,0,-SQ05,-1,-SQ05,0,SQ05]
+#         SQ05 = sqrt(0.5)
+#         self.dxn_ivec = [0,-SQ05,-1,-SQ05,0,SQ05,1,SQ05]
+#         self.dxn_jvec = [1,SQ05,0,-SQ05,-1,-SQ05,0,SQ05]
 
         self.walk_flat = np.array([1, -self.W+1, -self.W, -self.W-1,
                                     -1, self.W-1, self.W, self.W+1])
@@ -1611,7 +1608,7 @@ class Tools(object):
         Creates the model domain
         '''
 
-        self.direction_setup()
+#         self.direction_setup()
 
         ##### empty arrays #####
 
