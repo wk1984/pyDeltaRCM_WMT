@@ -300,7 +300,7 @@ class Tools(object):
                               
             self.sed_parcel(theta_sed, 'sand', px, py)
         
-
+		self.topo_diffusion()
 
         ### %% TO DO %% replace with topo diffusion        
         
@@ -310,43 +310,23 @@ class Tools(object):
         #into channels ##should be a function, for cleanliness
         #####################################################################
         
-        
+    def topo_diffusion(self):
+    
         for crossdiff in range(self.N_crossdiff):
         
-            eta_diff = self.eta
+            a = ndimage.convolve(self.eta, self.kernel1, mode='constant')
+            b = ndimage.convolve(self.qs, self.kernel2, mode='constant')
+            c = ndimage.convolve(self.qs * self.eta, self.kernel2,
+                                 mode='constant')
+        
+            self.cf = (self.diffusion_multiplier *
+                     (self.qs * a - self.eta * b + c))
             
-            for i in range(1, self.L-1):
             
-                for j in range(1, self.W-1):
-                
-                    if ((self.cell_type[i,j] >= -1)):
-                        
-                        crossflux = 0
-                        
-                        for k in range(self.Nnbr[i,j]):
-                        
-                            inbr,jnbr = self.walk(i,j,k)
-                            
-                            if self.cell_type[inbr,jnbr] >= -1:
-                            
-                                crossflux_nb = (self.dt / self.N_crossdiff *
-                                self.alpha * 0.5 * (self.qs[i,j] +
-                                self.qs[inbr,jnbr]) * self.dx *
-                                (self.eta[inbr,jnbr] - self.eta[i,j]) / self.dx)
-                                 #diffusion based on slope and sand flux
-                                 
-                                 
-                                crossflux = crossflux + crossflux_nb
-                                
-                                eta_diff[i,j] = (eta_diff[i,j] +
-                                                 crossflux_nb /
-                                                 self.dx / self.dx)
-                                                 
-                                                 
-            self.eta = eta_diff
-    
-    
-    
+            self.cf[self.cell_type == -2] = 0
+            self.cf[0,:] = 0
+            
+            self.eta += self.cf   
     
     
     def mud_route(self):
